@@ -100,6 +100,9 @@ public class Analysis {
 
         if(methodFound) {
             printInfo(targetMethod);
+            IALatticePreProcess p =new IALatticePreProcess();
+//            System.out.println(targetMethod.retrieveActiveBody());
+            List<ProgramPoint> points=p.PreProcess(targetMethod.retrieveActiveBody());
 	    // the call above prints the Soot IR (Intermediate Represenation) of the targetMethod.
 	    // You can use the same printInfo method appropriately
 	    // to view the IR of any method.

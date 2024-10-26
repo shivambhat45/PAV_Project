@@ -35,6 +35,8 @@ public class ProgramPoint {
         return successors;
     }
 
+    public void setSuccessors(List<ProgramPoint> s) {this.successors = s;}
+
     public void addSuccessor(ProgramPoint successor) {
         this.successors.add(successor);
     }
