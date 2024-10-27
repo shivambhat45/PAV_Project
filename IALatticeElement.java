@@ -11,6 +11,7 @@ import soot.jimple.internal.JNeExpr;
 import soot.jimple.internal.JIfStmt;
 import soot.Local;
 import soot.Value;
+import soot.jimple.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -72,32 +73,88 @@ public class IALatticeElement implements LatticeElement {
 
     // Transfer function for conditional statements
     @Override
-    public LatticeElement tf_condstmt(boolean b, Stmt st) {
-        JIfStmt ifStmt = (JIfStmt) st;
+    public LatticeElement tf_condstmt(boolean isTrueBranch, Stmt st) {
+        IfStmt ifStmt = (IfStmt) st;
         BinopExpr condition = (BinopExpr) ifStmt.getCondition();
-        String varName = condition.getOp1().toString();
-        Interval currentInterval = state.getOrDefault(varName, BOTTOM);
+        Value op1 = condition.getOp1();
+        Value op2 = condition.getOp2();
+    
+        String varName1 = op1.toString();
+        Interval interval1 = state.getOrDefault(varName1, BOTTOM);
+        Interval interval2;
+    
+        if (op2 instanceof IntConstant) {
+            // Case 1: op2 is a constant
+            int constantValue = ((IntConstant) op2).value;
+            interval2 = new Interval(constantValue, constantValue);
+        } else if (op2 instanceof Local) {
+            // Case 2: op2 is a variable
+            String varName2 = op2.toString();
+            interval2 = state.getOrDefault(varName2, BOTTOM);
+        } else {
+            throw new UnsupportedOperationException("Unsupported operand type: " + op2);
+        }
+    
         Interval newInterval;
-        if (condition instanceof JLtExpr) {
-            newInterval = new Interval(BOTTOM.getLowerBound(), currentInterval.getLowerBound() - 1);
-        } else if (condition instanceof JLeExpr) {
-            newInterval = new Interval(BOTTOM.getLowerBound(), currentInterval.getLowerBound());
-        } else if (condition instanceof JGtExpr) {
-            newInterval = new Interval(currentInterval.getUpperBound() + 1, BOTTOM.getUpperBound());
-        } else if (condition instanceof JGeExpr) {
-            newInterval = new Interval(currentInterval.getUpperBound(), BOTTOM.getUpperBound());
-        } else if (condition instanceof JEqExpr) {
-            newInterval = currentInterval; // No change in bounds
-        } else if (condition instanceof JNeExpr) {
-            newInterval = currentInterval; // No change in bounds
+        if (condition instanceof LtExpr) {
+            if (isTrueBranch) {
+                // True branch for x < y
+                newInterval = new Interval(interval1.getLowerBound(), Math.min(interval1.getUpperBound(), interval2.getUpperBound() - 1));
+            } else {
+                // False branch for x >= y
+                newInterval = new Interval(Math.max(interval1.getLowerBound(), interval2.getLowerBound()), interval1.getUpperBound());
+            }
+        } else if (condition instanceof LeExpr) {
+            if (isTrueBranch) {
+                // True branch for x <= y
+                newInterval = new Interval(interval1.getLowerBound(), Math.min(interval1.getUpperBound(), interval2.getUpperBound()));
+            } else {
+                // False branch for x > y
+                newInterval = new Interval(Math.max(interval1.getLowerBound(), interval2.getLowerBound() + 1), interval1.getUpperBound());
+            }
+        } else if (condition instanceof GtExpr) {
+            if (isTrueBranch) {
+                // True branch for x > y
+                newInterval = new Interval(Math.max(interval1.getLowerBound(), interval2.getLowerBound() + 1), interval1.getUpperBound());
+            } else {
+                // False branch for x <= y
+                newInterval = new Interval(interval1.getLowerBound(), Math.min(interval1.getUpperBound(), interval2.getUpperBound()));
+            }
+        } else if (condition instanceof GeExpr) {
+            if (isTrueBranch) {
+                // True branch for x >= y
+                newInterval = new Interval(Math.max(interval1.getLowerBound(), interval2.getLowerBound()), interval1.getUpperBound());
+            } else {
+                // False branch for x < y
+                newInterval = new Interval(interval1.getLowerBound(), Math.min(interval1.getUpperBound(), interval2.getUpperBound() - 1));
+            }
+        } else if (condition instanceof EqExpr) {
+            if (isTrueBranch) {
+                // True branch for x == y
+                newInterval = new Interval(Math.max(interval1.getLowerBound(), interval2.getLowerBound()), Math.min(interval1.getUpperBound(), interval2.getUpperBound()));
+            } else {
+                // False branch for x != y, no change in bounds (we only avoid equality)
+                newInterval = interval1;
+            }
+        } else if (condition instanceof NeExpr) {
+            if (isTrueBranch) {
+                // True branch for x != y, no change in bounds
+                newInterval = interval1;
+            } else {
+                // False branch for x == y
+                newInterval = new Interval(Math.max(interval1.getLowerBound(), interval2.getLowerBound()), Math.min(interval1.getUpperBound(), interval2.getUpperBound()));
+            }
         } else {
             throw new UnsupportedOperationException("Unknown condition type: " + condition);
         }
-
-        HashMap<String, Interval> newstate = new HashMap<>(state);
-        newstate.put(varName, newInterval);
-        return new IALatticeElement(newstate);
+    
+        // Create a new state with the updated interval for the variable
+        HashMap<String, Interval> newState = new HashMap<>(state);
+        newState.put(varName1, newInterval);
+        return new IALatticeElement(newState);
     }
+    
+
 
     @Override
     public String toString() {
