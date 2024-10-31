@@ -21,3 +21,4 @@ virtualedges.xml
 XPP3_1.1.3.4d_b4_MIN_VERSION
 parser.dat
 peephole.dat
+*.class

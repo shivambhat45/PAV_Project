@@ -14,7 +14,6 @@ class BasicTest{
         else{
             x = x + 1;
         }
-
         return x+check;
 
     }

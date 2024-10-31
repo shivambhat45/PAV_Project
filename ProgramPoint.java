@@ -31,6 +31,7 @@ public class ProgramPoint {
         return marked;
     }
 
+    public void setMarked(boolean value){this.marked=value;}
     public List<ProgramPoint> getSuccessors() {
         return successors;
     }
