@@ -243,43 +243,90 @@ public class IALatticeElement2 implements LatticeElement,Cloneable {
                         } else {
                             // For false branch, left < right
                             // This means left must be less than the minimum of right
-                            newState.state.put(((Local) binOp.getOp1()).getName(), new Interval(leftInterval.getLowerBound(), Math.min(leftInterval.getUpperBound(), rightInterval.getUpperBound() - 1)));
+                            newState.state.put(((Local) binOp.getOp1()).getName(), 
+                            new Interval(leftInterval.getLowerBound(), Math.min(leftInterval.getUpperBound(), rightInterval.getUpperBound() - 1)));
                             //                        tf_identity_fn();
                         }
                     }
-                } else if (binOp instanceof JLtExpr) {
+                } else if (binOp instanceof JLtExpr) { // condition: left < right
                     if (isTrueBranch) {
-                            Interval updated = new Interval(leftInterval.getLowerBound(), Math.min(leftInterval.getUpperBound(), rightInterval.getLowerBound() - 1));
-                            newState.state.put(((Local) binOp.getOp1()).getName(), updated);}
-                     else {
-                        Interval updated = new Interval(Math.max(leftInterval.getLowerBound(), rightInterval.getLowerBound()), leftInterval.getUpperBound());
-                        newState.state.put(((Local) binOp.getOp1()).getName(), updated);
+                        // if (leftInterval.getUpperBound() == rightInterval.getLowerBound()) {
+                        //     System.out.println("What's in the state");
+                        //     System.out.println(state);
+                        //     newState.state.put(((Local) binOp.getOp1()).getName(),
+                        //             new Interval(leftInterval.getLowerBound(), Math.min(leftInterval.getUpperBound(), rightInterval.getUpperBound() - 1)));
+                        // } else {
+                        //     newState.state.put(((Local) binOp.getOp1()).getName(),
+                        //             new Interval(leftInterval.getLowerBound(), Math.min(leftInterval.getUpperBound(), rightInterval.getUpperBound() - 1)));
+                        //     //                        newState.state.put(((Local) binOp.getOp1()).getName(),new Interval());
+                        // }
+                        // same for both the conditions
+                        newState.state.put(((Local) binOp.getOp1()).getName(),
+                                    new Interval(leftInterval.getLowerBound(), Math.min(leftInterval.getUpperBound(), rightInterval.getUpperBound() - 1)));
+                    } else {
+                        // >=
+                        if (leftInterval.getUpperBound() == rightInterval.getLowerBound()) {
+                            System.out.println("What's in the state");
+                            System.out.println(state);
+                            newState.state.put(((Local) binOp.getOp1()).getName(),
+                                    new Interval(Math.max(leftInterval.getLowerBound(), rightInterval.getLowerBound()), rightInterval.getUpperBound()));
+                        } else {
+                            newState.state.put(((Local) binOp.getOp1()).getName(),
+                                    new Interval(Math.max(leftInterval.getLowerBound(), rightInterval.getLowerBound()), leftInterval.getUpperBound()));
+                            //                        newState.state.put(((Local) binOp.getOp1()).getName(),new Interval());
+                        }
                     }
-
-
                 } else if (binOp instanceof JLeExpr) { // condition: left <= right
                     if (isTrueBranch) {
-                        // For true branch, left <= right is true
-                        // This means left must be at most the maximum of right
-                        newState.state.put(((Local) binOp.getOp1()).getName(),
-                                new Interval(leftInterval.getLowerBound(), Math.min(leftInterval.getUpperBound(), rightInterval.getUpperBound())));
-                    } else {
-                        // For false branch, left > right
-                        newState.state.put(((Local) binOp.getOp1()).getName(),
-                                new Interval(Math.max(leftInterval.getLowerBound(), rightInterval.getLowerBound() + 1), leftInterval.getUpperBound()));
+                        if (leftInterval.getUpperBound() == rightInterval.getLowerBound()) {
+                            System.out.println("What's in the state");
+                            System.out.println(state);
+                            newState.state.put(((Local) binOp.getOp1()).getName(),
+                                    new Interval(Math.min(leftInterval.getLowerBound(), rightInterval.getLowerBound()), leftInterval.getUpperBound()));
+                        } else {
+                            newState.state.put(((Local) binOp.getOp1()).getName(),
+                                    new Interval(Math.min(leftInterval.getLowerBound(), rightInterval.getLowerBound()), rightInterval.getUpperBound()));
+                            //                        newState.state.put(((Local) binOp.getOp1()).getName(),new Interval());
+                        }
+                    } else { // left > right
+                        System.out.println("Is it here now");
+                        if (leftInterval.getUpperBound() == rightInterval.getLowerBound()) {
+                            System.out.println("Inside");
+                            newState.setPropogationCondition(false);
+                        } else {
+                            // For false branch, left > right
+                            newState.state.put(((Local) binOp.getOp1()).getName(), 
+                            new Interval(Math.max(leftInterval.getLowerBound(), rightInterval.getLowerBound() + 1),leftInterval.getUpperBound()));
+                            //                        tf_identity_fn();
+                        }
                     }
                 } else if (binOp instanceof JGtExpr) { // condition: left > right
                     if (isTrueBranch) {
-                        // For true branch, left > right is true
-                        newState.state.put(((Local) binOp.getOp1()).getName(),
-                                new Interval(Math.max(leftInterval.getLowerBound(), rightInterval.getLowerBound() + 1), leftInterval.getUpperBound()));
-                    } else {
+                        // if (leftInterval.getUpperBound() == rightInterval.getLowerBound()) {
+                        //     // System.out.println("What's in the state");
+                        //     // System.out.println(state);
+                        //     // newState.state.put(((Local) binOp.getOp1()).getName(),
+                        //     //         new Interval(leftInterval.getLowerBound(), leftInterval.getUpperBound()));
+                        //     System.out.println("Inside");
+                        //     newState.setPropogationCondition(false);
+                        // } else {
+                        //     newState.state.put(((Local) binOp.getOp1()).getName(),
+                        //             new Interval(Math.max(leftInterval.getLowerBound(), rightInterval.getLowerBound() + 1), leftInterval.getUpperBound()));
+                        //     //                        newState.state.put(((Local) binOp.getOp1()).getName(),new Interval());
+                        // }
+                        newState.state.put(((Local) binOp.getOp1()).getName(), 
+                            new Interval(Math.max(leftInterval.getLowerBound(), rightInterval.getLowerBound() + 1),leftInterval.getUpperBound()));
+                    } else { //<=
                         if (leftInterval.getUpperBound() == rightInterval.getLowerBound()) {
-                            newState.setPropogationCondition(false);
+                            System.out.println("What's in the state");
+                            System.out.println(state);
+                            newState.state.put(((Local) binOp.getOp1()).getName(),
+                                    new Interval(Math.min(leftInterval.getLowerBound(), rightInterval.getLowerBound()), leftInterval.getUpperBound()));
+                        } else {
+                            newState.state.put(((Local) binOp.getOp1()).getName(),
+                                    new Interval(Math.min(leftInterval.getLowerBound(), rightInterval.getLowerBound()), rightInterval.getUpperBound()));
+                            //                        newState.state.put(((Local) binOp.getOp1()).getName(),new Interval());
                         }
-                        // For false branch, left <= right
-                        newState.state.put(((Local) binOp.getOp1()).getName(),
-                                new Interval(leftInterval.getLowerBound(), Math.min(leftInterval.getUpperBound(), rightInterval.getUpperBound())));
                     }
                 } else if (binOp instanceof JNeExpr) { // condition: left != right
                     if (isTrueBranch) {
