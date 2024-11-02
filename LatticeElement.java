@@ -8,23 +8,16 @@ public interface LatticeElement extends Cloneable{
     public boolean equals(LatticeElement r);
 
     // transfer function for assignment statements
-    public LatticeElement tf_assignstmt(Stmt st);
+    public LatticeElement tf_assignstmt(Stmt st,int upperBound);
 
     // transfer function for conditional statements
     public LatticeElement tf_condstmt(boolean b, Stmt st,int upperBound);
 
-    //------------------- Extra Added ----------------------
+    // For Handling Different sort of Transfer Stmt within one.
     LatticeElement transfer(Stmt st, boolean isConditional, boolean conditionTaken,int upperBound);
 
-    // return new LatticeElement same as "this", but not the same object.
+    // Identity Function.
     LatticeElement tf_identity_fn();
 
-    public boolean lessThan(LatticeElement r);
-
-    public boolean propogationCondition();
-
-    LatticeElement deepCopy();
-
-    // ---------------Till Here ---------------------------
 
 }

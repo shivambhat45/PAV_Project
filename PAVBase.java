@@ -5,11 +5,6 @@ import java.util.*;
 
 public class PAVBase {
 
-    protected static String getPrgPointName(int st1) {
-        String name1 = "in" + String.format("%02d", st1);
-        return name1;
-    }
-
     public static class ResultTuple {
         public final String m;
         public final String p;
@@ -26,39 +21,46 @@ public class PAVBase {
 
         @Override
         public String toString() {
-            return this.m +" " + this.p +" " + this.v;
+            return this.m + " " + this.p + " " + this.v;
         }
     }
 
-    protected static String fmtOutputLine(ResultTuple tup, String prefix) {
-        String line = tup.m + ": " + tup.p + ": " + tup.v + ": ";
-        List<String> intervalValues = tup.pV;
-        for(String interval: intervalValues){
-            line += interval+", ";
-        }
-        return (prefix + line);
-    }
-    protected static String fmtOutputLine(ResultTuple tup) {
-        return fmtOutputLine(tup, "");
-    }
 
-    protected static String[] fmtOutputData(Set<ResultTuple> data, String prefix) {
+    //  Redundant Code Already in Analysis.java File
 
-        String[] outputlines = new String[ data.size() ];
+//    protected static String fmtOutputLine(ResultTuple tup, String prefix) {
+//        String line = tup.m + ": " + tup.p + ": " + tup.v + ": ";
+//        List<String> intervalValues = tup.pV;
+//        for(String interval: intervalValues){
+//            line += interval+", ";
+//        }
+//        return (prefix + line);
+//    }
 
-        int i = 0;
-        for (ResultTuple tup : data) {
-            outputlines[i] = fmtOutputLine(tup, prefix);
-            i++;
-        }
+//    protected static String fmtOutputLine(ResultTuple tup) {
+//        return fmtOutputLine(tup, "");
+//    }
 
-        Arrays.sort(outputlines);
-        return outputlines;
-    }
+//    protected static String[] fmtOutputData(Set<ResultTuple> data, String prefix) {
+//
+//        String[] outputlines = new String[ data.size() ];
+//
+//        int i = 0;
+//        for (ResultTuple tup : data) {
+//            outputlines[i] = fmtOutputLine(tup, prefix);
+//            i++;
+//        }
+//
+//        Arrays.sort(outputlines);
+//        return outputlines;
+//    }
 
+//    protected static String[] fmtOutputData(Set<ResultTuple> data) {
+//        return fmtOutputData(data, "");
+//    }
 
-
-    protected static String[] fmtOutputData(Set<ResultTuple> data) {
-        return fmtOutputData(data, "");
-    }
+    //   In Analysis.java
+//    protected static String fmtOutputLine(ResultTuple tup) {
+//        return fmtOutputLine(tup, "");
+//    }
 }

@@ -7,8 +7,8 @@
 // 2) https://github.com/soot-oss/soot/wiki/Tutorials
 
 
-
 ////////////////////////////////////////////////////////////////////////////////
+
 import java.io.File;
 import java.io.FileWriter;
 import java.util.*;
@@ -16,13 +16,11 @@ import java.util.*;
 ////////////////////////////////////////////////////////////////////////////////
 
 import soot.*;
-import soot.jimple.IfStmt;
 import soot.options.Options;
 
 import soot.jimple.Stmt;
 
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.util.cfgcmd.CFGToDotGraph;
@@ -31,20 +29,12 @@ import soot.util.dot.DotGraph;
 ////////////////////////////////////////////////////////////////////////////////
 
 
-
 public class Analysis extends PAVBase {
     private DotGraph dot = new DotGraph("callgraph");
     private static HashMap<String, Boolean> visited = new
             HashMap<String, Boolean>();
 
     public Analysis() {
-    }
-
-    public static void doAnalysis(SootMethod targetMethod) {
-        /*************************************************************
-         * You can implement your analysis here. In general,
-         you may implement your analysis in other classes, and invoke that code from here.
-         ************************************************************/
     }
 
     public static void main(String[] args) {
@@ -103,65 +93,35 @@ public class Analysis extends PAVBase {
         if (methodFound) {
             printInfo(targetMethod);
             IALatticePreProcess p = new IALatticePreProcess();
-//            System.out.println(targetMethod.retrieveActiveBody());
             List<ProgramPoint> points = p.PreProcess(targetMethod.retrieveActiveBody());
 
-            System.out.println(points);
+            IALatticeElement d0 = new IALatticeElement();
 
-
-//            System.out.println("----------------");
-//            List<ProgramPoint> points = Merger.mergeProgramPoints(points2);
-//            System.out.println(points);
-//            System.out.println(mergedPoints.get(2).getSuccessors());
-//            System.out.println("----------");
-//            for(int i=0;i<mergedPoints.size();i++) {
-//                System.out.println(mergedPoints.get(i).getId());
-//                System.out.println(mergedPoints.get(i).getStmt());
-//                System.out.println(mergedPoints.get(i).getSuccessors());
-//
-//                System.out.println("----------");
-//            }
-
-//          Interval.setGlobalUpperBound(Integer.valueOf(upperBound));
-
-
-            IALatticeElement2 d0 = new IALatticeElement2();
-            IALatticeElement2 bot = new IALatticeElement2();
+            IALatticeElement bot = new IALatticeElement();
 
             Body body = targetMethod.retrieveActiveBody();
             Set<String> variables = new HashSet<>();
 
+
             // Iterate over all locals in the body
             for (Local local : body.getLocals()) {
                 d0.initializeVariable(local.getName());
-                bot.initializeVariable(local.getName());
+                bot.initialize2Variable(local.getName());
             }
 
 
-
-            ArrayList<ArrayList<LatticeElement>> output = Kildall.run(points, d0, bot,Integer.valueOf(upperBound));
+            ArrayList<ArrayList<LatticeElement>> output = Kildall.run(points, d0, bot, Integer.valueOf(upperBound));
             System.out.println(output);
-
-
-            //////////////////////////////////////////////////////////////////
-            ///Joining with same successors
-
-            ///////////////////////////////////////////////
 
 
             writeFinalOutput(output.get(output.size() - 1), targetDirectory, tClass + "." + tMethod, Integer.valueOf(upperBound));
             writeFullOutput(output, targetDirectory, tClass + "." + tMethod, Integer.valueOf(upperBound));
 
-            // Draw the CFG with states information to .dot file.
-            Map<Unit, LatticeElement> mp = new HashMap<>();
-            for (int i = 0; i < points.size(); i++) {
-                ProgramPoint p1 = points.get(i);
-                mp.put(p1.getStmt(), output.get(output.size() - 1).get(i));
-            }
-            drawMethodDependenceGraph(targetMethod, mp, targetDirectory + File.separator + tClass + "." + tMethod);
+
+            drawMethodDependenceGraph(targetMethod);
 
 
-//                   the call above prints the Soot IR (Intermediate Represenation) of the targetMethod.
+//           the call above prints the Soot IR (Intermediate Represenation) of the targetMethod.
             // You can use the same printInfo method appropriately
             // to view the IR of any method.
 
@@ -175,46 +135,21 @@ public class Analysis extends PAVBase {
              * fix-point algorithm over the LatticeElement.
              ******************************************************************/
 
-            // Draw the CFG with states information to .dot file.
-//            Map<Unit, LatticeElement> mp = new HashMap<>();
-//            for (int i = 0; i < points.size(); i++) {
-//                ProgramPoint p1 = points.get(i);
-//                mp.put(p1.getStmt(), output.get(output.size() - 1).get(i));
-//            }
-//            drawMethodDependenceGraph(targetMethod, mp, targetDirectory + File.separator + tClass + "." + tMethod);
-//	    // the call above generates the control-flow graph of the targetMethod.
-            // Since you are going to implement a flow-insensitive analysis, you
-            // may not need to know about control-flow graphs at all.
-
-//	    doAnalysis(targetMethod);
         } else {
             System.out.println("Method not found: " + tMethod);
         }
     }
 
 
-
-
-
-    /**
-     * Write full output to targetDirectory/tMethod.fulloutput.txt, the output format is as follows.
-     * For each kildall's iterations, for each program point state which changed from previous iteration,
-     * that program point is added to the output, as follows:
-     * tMethod: inXX: var: {var_points_to}
-     * the lines are lexographically sorted.
-     *
-     * @param output          ArrayList<ArrayList> States of program elements.
-     * @param targetDirectory
-     * @param tMethod
-     */
-    private static void writeFullOutput(ArrayList<ArrayList<LatticeElement>> output, String targetDirectory, String tMethod,int upperBound) {
+    // For Writing Full Output Displaying Each iteration of Kildall Algorithm
+    private static void writeFullOutput(ArrayList<ArrayList<LatticeElement>> output, String targetDirectory, String tMethod, int upperBound) {
         ArrayList<String> allLines = new ArrayList<>();
 
         for (int i = 0; i < output.size(); i++) {
             ArrayList<LatticeElement> iteration = output.get(i);
             Set<ResultTuple> data = new HashSet<>();
             for (int j = 1; j < iteration.size(); j++) {
-                IALatticeElement2 e_ = (IALatticeElement2) iteration.get(j);
+                IALatticeElement e_ = (IALatticeElement) iteration.get(j);
                 if (i != 0 && e_.equals(output.get(i - 1).get(j)))
                     continue; // only output the states that changed from previous iterations.
                 for (Map.Entry<String, Interval> entry : e_.getState().entrySet()) {
@@ -222,12 +157,12 @@ public class Analysis extends PAVBase {
 
                     Interval interval = entry.getValue();
 
-                    if(interval.getLowerBound()<0)
-                    {
+                    // For Displaying value as +inf and -inf
+
+                    if (interval.getLowerBound() < 0) {
                         interval.setFinalLowerBound("-inf");
                     }
-                    if(interval.getUpperBound()>upperBound)
-                    {
+                    if (interval.getUpperBound() > upperBound) {
                         interval.setFinalUpperBound("inf");
                     }
                     // Assuming Interval has methods to get the bounds
@@ -238,6 +173,8 @@ public class Analysis extends PAVBase {
                     ResultTuple tuple = new ResultTuple(tMethod, "in" + String.format("%02d", j), entry.getKey(), intervalStrings);
                     data.add(tuple);
                 }
+
+
             }
 
             String[] lines = fmtOutputData(data);
@@ -246,8 +183,6 @@ public class Analysis extends PAVBase {
             allLines.addAll(Arrays.asList(lines));
             allLines.add("");
         }
-        sortInValues(allLines);
-
 
 
         try {
@@ -266,39 +201,25 @@ public class Analysis extends PAVBase {
     }
 
 
-
-
-
-
-    /**
-     * Write the final states info of all program point to targetDirectory/tMethod.output.txt
-     * The output format is as mentioned.
-     *
-     * @param output          ArrayList of states of each program point in order of stmt.
-     * @param targetDirectory
-     * @param tMethod
-     */
-    private static void writeFinalOutput(ArrayList<LatticeElement> output, String targetDirectory, String tMethod,int upperBound) {
+    // Final State Output showing the end Result after running the Kildall Completely and no updates further
+    private static void writeFinalOutput(ArrayList<LatticeElement> output, String targetDirectory, String tMethod, int upperBound) {
         Set<ResultTuple> data = new HashSet<>();
         int index = 0;
         for (LatticeElement e : output) {
-            if(index==0)
-            {
+            if (index == 0) {
                 index++;
                 continue;
             }
-            IALatticeElement2 e_ = (IALatticeElement2) e;
+            IALatticeElement e_ = (IALatticeElement) e;
             for (Map.Entry<String, Interval> entry : e_.getState().entrySet()) {
                 if (!entry.getValue().isEmpty()) {
 
                     Interval interval = entry.getValue();
 
-                    if(interval.getLowerBound()<0)
-                    {
+                    if (interval.getLowerBound() < 0) {
                         interval.setFinalLowerBound("-inf");
                     }
-                    if(interval.getUpperBound()>upperBound)
-                    {
+                    if (interval.getUpperBound() > upperBound) {
                         interval.setFinalUpperBound("inf");
                     }
 
@@ -331,27 +252,19 @@ public class Analysis extends PAVBase {
     }
 
 
-    private static void drawMethodDependenceGraph(SootMethod entryMethod, Map<Unit, LatticeElement> labels, String filename){
-        if (!entryMethod.isPhantom() && entryMethod.isConcrete()) {
-            Body body = entryMethod.retrieveActiveBody();
-
+    private static void drawMethodDependenceGraph(SootMethod method) {
+        if (!method.isPhantom() && method.isConcrete()) {
+            Body body = method.retrieveActiveBody();
             ExceptionalUnitGraph graph = new ExceptionalUnitGraph(body);
 
-            DotGraph d = new DotGraph(filename);
-
-            for (Unit unit : graph) {
-                List<Unit> successors = graph.getSuccsOf(unit);
-                for (Unit succ : successors) {
-                    d.drawNode(labels.get(unit) + "\n" + unit.toString() + " hash: " + unit.hashCode());
-                    d.drawNode(labels.get(succ) + "\n" + succ.toString() + " hash: " + succ.hashCode());
-                    d.drawEdge(labels.get(unit) + "\n" + unit + " hash: " + unit.hashCode(), labels.get(succ) + "\n" + succ + " hash: " + succ.hashCode());
-                }
-            }
-            d.plot(filename + ".dot");
+            CFGToDotGraph cfgForMethod = new CFGToDotGraph();
+            cfgForMethod.drawCFG(graph);
+            DotGraph cfgDot = cfgForMethod.drawCFG(graph);
+            cfgDot.plot(method.getName() + "cfg.dot");
         }
     }
 
-    public static void printUnit(int lineno, Body b, Unit u){
+    public static void printUnit(int lineno, Body b, Unit u) {
         UnitPrinter up = new NormalUnitPrinter(b);
         u.toString(up);
         String linenostr = String.format("%02d", lineno) + ": ";
@@ -360,20 +273,19 @@ public class Analysis extends PAVBase {
 
 
     private static void printInfo(SootMethod entryMethod) {
-        if (!entryMethod.isPhantom() && entryMethod.isConcrete())
-        {
+        if (!entryMethod.isPhantom() && entryMethod.isConcrete()) {
             Body body = entryMethod.retrieveActiveBody();
-	    // `body' refers to the code body  of entryMethod
+            // `body' refers to the code body  of entryMethod
 
             int lineno = 1;
             for (Unit u : body.getUnits()) {
-		// .getUnits retrieves all the Units in the code body of the method, as a list. 
-		// A Unit basically represent a single statement or conditional in the Soot IR.
-		// You should fully understand the structure of a Unit, the subtypes of Unit, etc., 
-		// to make progress with your analysis.
-		// Objects of type `Value' in Soot represent  local variables, constants and expressions.
-		// Expressions may be BinopExp, InvokeExpr, and so on.
-		// Boxes: References in Soot are called boxes. There are two types – Unitboxes, ValueBoxes.
+                // .getUnits retrieves all the Units in the code body of the method, as a list.
+                // A Unit basically represent a single statement or conditional in the Soot IR.
+                // You should fully understand the structure of a Unit, the subtypes of Unit, etc.,
+                // to make progress with your analysis.
+                // Objects of type `Value' in Soot represent  local variables, constants and expressions.
+                // Expressions may be BinopExp, InvokeExpr, and so on.
+                // Boxes: References in Soot are called boxes. There are two types – Unitboxes, ValueBoxes.
 
                 if (!(u instanceof Stmt)) {
                     continue;
@@ -387,7 +299,7 @@ public class Analysis extends PAVBase {
     }
 
     protected static String fmtOutputLine(ResultTuple tup, String prefix) {
-        String line = tup.m + ": " + tup.p + ": " + tup.v + ": ";
+        String line = tup.m + ": " + tup.p + ": " + tup.v + ":";
         List<String> intervalValues = tup.pV;
         Collections.sort(intervalValues);
         for (int i = 0; i < intervalValues.size(); i++) {
@@ -397,55 +309,9 @@ public class Analysis extends PAVBase {
         return (prefix + line);
     }
 
-
-    protected static String fmtOutputLine(ResultTuple tup) {
-        return fmtOutputLine(tup, "");
-    }
-
-    public static void sortInValues(ArrayList<String> values) {
-        Collections.sort(values, new Comparator<String>() {
-            @Override
-            public int compare(String o1, String o2) {
-                Integer num1 = extractNumericValue(o1);
-                Integer num2 = extractNumericValue(o2);
-                return Integer.compare(num1, num2);
-            }
-
-            private Integer extractNumericValue(String str) {
-                // Use regex to find the numeric value after "in"
-                String regex = "in(\\d+)";
-                java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(regex);
-                java.util.regex.Matcher matcher = pattern.matcher(str);
-
-                if (matcher.find()) {
-                    // Return the integer value found
-                    return Integer.parseInt(matcher.group(1));
-                }
-                // If "inXX" not found, return a value that ensures proper sorting
-                return Integer.MAX_VALUE; // or any other default value
-            }
-        });
-    }
-    private static int alphanumericCompare(String str1, String str2) {
-        String[] parts1 = str1.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
-        String[] parts2 = str2.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
-
-        for (int i = 0; i < Math.min(parts1.length, parts2.length); i++) {
-            int cmp = parts1[i].compareTo(parts2[i]);
-            if (cmp != 0) {
-                return cmp;
-            }
-        }
-        return Integer.compare(parts1.length, parts2.length); // Compare length if equal
-    }
-
-
-
-
     protected static String[] fmtOutputData(Set<ResultTuple> data, String prefix) {
         String[] outputlines = new String[data.size()];
 
-//        List<ResultTuple> sortedData = sortResultTuples(data);
         int i = 0;
         for (ResultTuple tup : data) {
             outputlines[i] = fmtOutputLine(tup, prefix);
