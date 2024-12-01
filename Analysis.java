@@ -111,7 +111,7 @@ public class Analysis extends PAVBase {
 
 
             ArrayList<ArrayList<LatticeElement>> output = Kildall.run(points, d0, bot, Integer.valueOf(upperBound));
-            System.out.println(output);
+
 
 
             writeFinalOutput(output.get(output.size() - 1), targetDirectory, tClass + "." + tMethod, Integer.valueOf(upperBound));

@@ -25,6 +25,24 @@ class BasicTest{
         }
         return x;
     }
+
+    static void foo(int n) {
+        int i = n;
+        while (i > 10) {
+            i = i -1;
+        }
+        int j = 9;
+        int k = 1;
+        while (j < 18) {
+            j = j + k;
+            k = k + 1;
+        }
+        int l = 0;
+        if (i == j) {
+            l = i;
+        }
+        System.out.println(l);
+    }
 }
 
 

@@ -14,7 +14,6 @@ public class IALatticePreProcess implements IAPreProcess {
         List<ProgramPoint> result = new ArrayList<>();
         HashMap<Unit, ProgramPoint> unitToProgramPoint = new HashMap<>();
         ExceptionalUnitGraph graph = new ExceptionalUnitGraph(body);
-        HashMap<List<Unit>, Integer> successorsToIdMap = new HashMap<>();  // Map unique successor sets to IDs
         int lineNo = 0; // Start sequential ID from 0 for clarity
 
         // First pass: Create ProgramPoints with unique IDs based on successors
@@ -22,18 +21,6 @@ public class IALatticePreProcess implements IAPreProcess {
             unit.addTag(new LineNumberTag(lineNo));
             ProgramPoint programPoint = new ProgramPoint(lineNo++, (Stmt) unit);
 
-//            List<Unit> successors = graph.getSuccsOf(unit);  // Get successors for this unit
-//
-            // Check if this unique set of successors already has an ID
-//            Integer existingId = successorsToIdMap.get(successors);
-//            if (existingId == null) {
-//                // Assign new sequential ID if this successor set hasn't been seen before
-//                existingId = lineNo++;
-//                successorsToIdMap.put(successors, existingId);
-//            }
-////
-//////             Create the ProgramPoint with the unique ID for this set of successors
-//            ProgramPoint programPoint = new ProgramPoint(existingId, (Stmt) unit);
             unitToProgramPoint.put(unit, programPoint);
             result.add(programPoint);
         }

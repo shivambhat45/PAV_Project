@@ -126,7 +126,6 @@ public class IALatticeElement implements LatticeElement, Cloneable {
 
             // Update the state with the new interval for the variable
             newState.put(varName, newInterval);
-            System.out.println(newState);
         }
 
         return new IALatticeElement(newState);
@@ -136,7 +135,6 @@ public class IALatticeElement implements LatticeElement, Cloneable {
     private Interval computeIntervalFromBinaryOp(BinopExpr binop) {
         Interval leftInterval = getIntervalFromValue(binop.getOp1());
         Interval rightInterval = getIntervalFromValue(binop.getOp2());
-        System.out.println(binop.getSymbol());
         String operator = binop.getSymbol();
         operator = operator.trim();
 
@@ -146,14 +144,12 @@ public class IALatticeElement implements LatticeElement, Cloneable {
             case "-":
                 return leftInterval.subtract(rightInterval);
             case "*":
-                System.out.println("mul");
                 return leftInterval.multiply(rightInterval);
             case "/":
                 return leftInterval.divide(rightInterval);
             case "%":
                 return leftInterval.modulo(rightInterval);
             default:
-                System.out.println("def");
                 return Interval.BOTTOM; // Handle unexpected operators
         }
     }
@@ -241,30 +237,119 @@ public class IALatticeElement implements LatticeElement, Cloneable {
                 } else {
                     newState.state.put(((Local) binOp.getOp1()).getName(), new Interval(leftInterval.getLowerBound(), Math.min(leftInterval.getUpperBound(), rightInterval.getUpperBound())));
                 }
+            }
+//            else if (binOp instanceof JNeExpr) { // condition: left != right
+//                if (isTrueBranch) {
+////                    // For true branch, left != right is true
+//////                    newState.state.put(((Local) binOp.getOp1()).getName(),new Interval(leftInterval.getLowerBound(), leftInterval.getUpperBound()));
+//
+//                    //Added
+//
+//                    int lower1 = leftInterval.getLowerBound();
+//                    int upper1 = leftInterval.getUpperBound();
+//                    int lower2 = rightInterval.getLowerBound();
+//                    int upper2 = rightInterval.getUpperBound();
+//
+//                    // Check if the intervals overlap
+//                    Interval leftExclusion = null;
+//                    Interval rightExclusion = null;
+//
+//                    // If intervals overlap, exclude the intersection
+//                    if (upper1 < lower2 || upper2 < lower1) {
+//                        // No overlap, keep original intervals
+//                        leftExclusion = leftInterval;
+//                        rightExclusion = rightInterval;
+//                    } else {
+//                        // There is an overlap, we exclude the intersection
+//                        if (lower1 < lower2) {
+//                            leftExclusion = new Interval(lower1, lower2 - 1); // left part before intersection
+//                        }
+//                        if (upper1 > upper2) {
+//                            rightExclusion = new Interval(upper2 + 1, upper1); // right part after intersection
+//                        }
+//                    }
+//
+//                    // If exclusion results in an empty interval, retain the original interval.
+//                    Interval updatedLeft = (leftExclusion != null) ? leftExclusion : leftInterval;
+//                    newState.state.put(((Local) binOp.getOp1()).getName(), updatedLeft);
+//
+//                    Interval updatedRight = (rightExclusion != null) ? rightExclusion : rightInterval;
+//                    newState.state.put(((Local) binOp.getOp2()).getName(), updatedRight);
+//                    // Added
+//                } else {
+////                    // For false branch, left == right
+////                    newState.state.put(((Local) binOp.getOp1()).getName(), new Interval(rightInterval.getLowerBound(), rightInterval.getUpperBound()));
+//
+//                    // Added
+//                    Interval updatedLeft = leftInterval, updatedRight = rightInterval;
+//
+//                    // Define intersection directly within the function
+//                    int lowerbound = Math.max(leftInterval.getLowerBound(), rightInterval.getLowerBound());
+//                    int upperbound = Math.min(leftInterval.getUpperBound(), rightInterval.getUpperBound());
+//
+//                    if (lowerbound <= upperbound) {
+//                        // The intervals intersect, so they should be the same
+//                        updatedLeft = new Interval(lowerbound, upperBound);
+//                        updatedRight = new Interval(lowerbound, upperBound);
+//                    }
+//                    // Update the state with the new intervals
+//                    newState.state.put(((Local) binOp.getOp1()).getName(), updatedLeft);
+//                    newState.state.put(((Local) binOp.getOp2()).getName(), updatedRight);
+//                    // Added
+//                }
 
-            } else if (binOp instanceof JNeExpr) { // condition: left != right
+
+//        }
+
+
+//            else if (binOp instanceof JEqExpr) { // condition: left == right
+//                if (isTrueBranch) {
+////                    newState.state.put(((Local) binOp.getOp1()).getName(),
+////                            new Interval(rightInterval.getLowerBound(), rightInterval.getUpperBound()));
+//                // Added
+//
+//
+//
+//                //  Added
+//                } else {
+////                        newState.state.put(((Local) binOp.getOp1()).getName(),
+////                                new Interval(leftInterval.getLowerBound(), leftInterval.getUpperBound()));
+//                 // Added
+//
+//
+//                 // Added
+//
+//                }
+//
+//
+            else if (binOp instanceof JNeExpr) { // condition: left != right
                 if (isTrueBranch) {
-                    // For true branch, left != right is true
-                    newState.state.put(((Local) binOp.getOp1()).getName(),new Interval(leftInterval.getLowerBound(), leftInterval.getUpperBound()));
-
+                    // True branch: left != right (no change to intervals)
+                    newState.state.put(((Local) binOp.getOp1()).getName(), leftInterval);
+                    newState.state.put(((Local) binOp.getOp2()).getName(), rightInterval);
                 } else {
-                    // For false branch, left == right
-                    newState.state.put(((Local) binOp.getOp1()).getName(), new Interval(rightInterval.getLowerBound(), rightInterval.getUpperBound()));
+                    // False branch: left == right
+                    Interval intersection = Interval.intersection(leftInterval, rightInterval);
+                    newState.state.put(((Local) binOp.getOp1()).getName(), intersection);
+                    newState.state.put(((Local) binOp.getOp2()).getName(), intersection);
                 }
             } else if (binOp instanceof JEqExpr) { // condition: left == right
                 if (isTrueBranch) {
-                    newState.state.put(((Local) binOp.getOp1()).getName(),
-                            new Interval(rightInterval.getLowerBound(), rightInterval.getUpperBound()));
-
+                    // True branch: left == right
+                    Interval intersection = Interval.intersection(leftInterval, rightInterval);
+                    newState.state.put(((Local) binOp.getOp1()).getName(), intersection);
+                    newState.state.put(((Local) binOp.getOp2()).getName(), intersection);
                 } else {
-                        newState.state.put(((Local) binOp.getOp1()).getName(),
-                                new Interval(leftInterval.getLowerBound(), leftInterval.getUpperBound()));
-                    }
+                    // False branch: left != right (no change to intervals)
+                    newState.state.put(((Local) binOp.getOp1()).getName(), leftInterval);
+                    newState.state.put(((Local) binOp.getOp2()).getName(), rightInterval);
                 }
+
+
             }
-//            }
             // Return the updated state after applying the conditional transfer function
-        return newState;
+        }
+            return newState;
     }
 
     @Override
@@ -381,6 +466,11 @@ class Interval {
         return new Interval(this);
     }
 
+    public boolean overlaps(Interval other) {
+        // Intervals overlap if the maximum of their lower bounds is less than or equal to the minimum of their upper bounds
+        return this.getLowerBound() <= other.getUpperBound() && this.getUpperBound() >= other.getLowerBound();
+    }
+
     public static final Interval BOTTOM = new Interval(10000, -10000);
     public static final Interval TOP = new Interval(-10000, 10000);
 
@@ -481,6 +571,14 @@ class Interval {
         return "[" + finalLowerBound + ", " + finalUpperBound + "]";
     }
 
+    public static Interval intersection(Interval a, Interval b) {
+        int newLower = Math.max(a.getLowerBound(), b.getLowerBound());
+        int newUpper = Math.min(a.getUpperBound(), b.getUpperBound());
+        if (newLower > newUpper) {
+            return Interval.BOTTOM; // Or handle as empty intersection
+        }
+        return new Interval(newLower, newUpper);
+    }
 
     @Override
     public boolean equals(Object o) {
