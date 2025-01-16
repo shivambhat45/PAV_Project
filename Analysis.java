@@ -16,11 +16,13 @@ import java.util.*;
 ////////////////////////////////////////////////////////////////////////////////
 
 import soot.*;
+import soot.jimple.AssignStmt;
 import soot.options.Options;
 
 import soot.jimple.Stmt;
 
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.util.cfgcmd.CFGToDotGraph;
@@ -95,13 +97,20 @@ public class Analysis extends PAVBase {
             IALatticePreProcess p = new IALatticePreProcess();
             List<ProgramPoint> points = p.PreProcess(targetMethod.retrieveActiveBody());
 
+            PointsToLatticeElement d00=new PointsToLatticeElement();
+            PointsToLatticeElement bot0=new PointsToLatticeElement();
+
+            ArrayList<ArrayList<LatticeElement>> output = Kildall.run(points, d00, bot0, Integer.valueOf(upperBound));
+
+            writeFinalOutput2(output.get(output.size() - 1), targetDirectory, tClass + "." + tMethod);
+            writeFullOutput2(output, targetDirectory, tClass + "." + tMethod);
+
+
             IALatticeElement d0 = new IALatticeElement();
 
             IALatticeElement bot = new IALatticeElement();
 
             Body body = targetMethod.retrieveActiveBody();
-            Set<String> variables = new HashSet<>();
-
 
             // Iterate over all locals in the body
             for (Local local : body.getLocals()) {
@@ -109,13 +118,17 @@ public class Analysis extends PAVBase {
                 bot.initialize2Variable(local.getName());
             }
 
-
-            ArrayList<ArrayList<LatticeElement>> output = Kildall.run(points, d0, bot, Integer.valueOf(upperBound));
-
+            ArrayList<ArrayList<LatticeElement>> output2 = Kildall.run(points, d0, bot, Integer.valueOf(upperBound));
 
 
-            writeFinalOutput(output.get(output.size() - 1), targetDirectory, tClass + "." + tMethod, Integer.valueOf(upperBound));
-            writeFullOutput(output, targetDirectory, tClass + "." + tMethod, Integer.valueOf(upperBound));
+            writeFinalOutput(output2.get(output2.size() - 1), targetDirectory, tClass + "." + tMethod, Integer.valueOf(upperBound));
+            writeFullOutput(output2, targetDirectory, tClass + "." + tMethod, Integer.valueOf(upperBound));
+
+
+
+            Safety.analyzeArraySafety(points,output2,output);
+            HashMap<Integer, String> myMap = Safety.myMap;
+            writeSafeOutput(myMap,targetDirectory, tClass + "." + tMethod, Integer.valueOf(upperBound));
 
 
             drawMethodDependenceGraph(targetMethod);
@@ -140,7 +153,6 @@ public class Analysis extends PAVBase {
         }
     }
 
-
     // For Writing Full Output Displaying Each iteration of Kildall Algorithm
     private static void writeFullOutput(ArrayList<ArrayList<LatticeElement>> output, String targetDirectory, String tMethod, int upperBound) {
         ArrayList<String> allLines = new ArrayList<>();
@@ -153,6 +165,12 @@ public class Analysis extends PAVBase {
                 if (i != 0 && e_.equals(output.get(i - 1).get(j)))
                     continue; // only output the states that changed from previous iterations.
                 for (Map.Entry<String, Interval> entry : e_.getState().entrySet()) {
+                    String variableName = entry.getKey();
+
+                    // Skip variables starting with "r"
+                    if (variableName.startsWith("r")) {
+                        continue;
+                    }
                     if (entry.getValue().isEmpty()) continue;
 
                     Interval interval = entry.getValue();
@@ -186,7 +204,7 @@ public class Analysis extends PAVBase {
 
 
         try {
-            FileWriter writer = new FileWriter(targetDirectory + File.separator + tMethod + ".fulloutput.txt");
+            FileWriter writer = new FileWriter(targetDirectory + File.separator + tMethod +".interval_analysis"+ ".fulloutput.txt");
             for (String line : allLines) {
                 writer.write(line + System.lineSeparator());
             }
@@ -198,6 +216,7 @@ public class Analysis extends PAVBase {
                 System.out.println(line);
             }
         }
+
     }
 
 
@@ -212,6 +231,12 @@ public class Analysis extends PAVBase {
             }
             IALatticeElement e_ = (IALatticeElement) e;
             for (Map.Entry<String, Interval> entry : e_.getState().entrySet()) {
+                String variableName = entry.getKey();
+
+                // Skip variables starting with "r"
+                if (variableName.startsWith("r")) {
+                    continue;
+                }
                 if (!entry.getValue().isEmpty()) {
 
                     Interval interval = entry.getValue();
@@ -236,8 +261,47 @@ public class Analysis extends PAVBase {
 
         String[] lines = fmtOutputData(data);
 
+
         try {
-            FileWriter writer = new FileWriter(targetDirectory + "/" + tMethod + ".output.txt");
+            FileWriter writer = new FileWriter(targetDirectory + "/" + tMethod +".interval_analysis"+".output.txt");
+            for (String line : lines) {
+                writer.write(line + System.lineSeparator());
+
+            }
+            writer.close();
+        } catch (Exception e) {
+            System.err.println("Can't write to the file:" + tMethod + ".output.txt");
+            System.out.println("Writing output to stdout:");
+            for (String line : lines) {
+                System.out.println(line);
+            }
+        }
+    }
+
+    private static void writeSafeOutput(HashMap<Integer, String> myMap, String targetDirectory, String tMethod, int upperBound) {
+        Set<ResultTuple> data = new HashSet<>();
+        int index = 0;
+
+        // Iterate through the map entries
+        for (Map.Entry<Integer, String> entry : myMap.entrySet()) {
+            Integer key = entry.getKey();
+            String value = entry.getValue();
+
+
+            // Assuming ResultTuple constructor accepts method name, index, variable name, and value list
+            List<String> safeValues = new ArrayList<>();
+            safeValues.add(value);
+
+            ResultTuple tuple = new ResultTuple(tMethod, String.format("%02d", key), "", safeValues);
+            data.add(tuple);
+
+            index++;
+        }
+
+        String[] lines = fmtOutputData(data);
+
+        try {
+            FileWriter writer = new FileWriter(targetDirectory + "/" + tMethod +".output.txt");
             for (String line : lines) {
                 writer.write(line + System.lineSeparator());
             }
@@ -248,6 +312,63 @@ public class Analysis extends PAVBase {
             for (String line : lines) {
                 System.out.println(line);
             }
+        }
+    }
+
+
+    private static void writeFinalOutput2(ArrayList<LatticeElement> output, String targetDirectory, String methodName) {
+        try {
+            FileWriter writer = new FileWriter(targetDirectory + File.separator + methodName +"_points_to_analysis"+ ".output.txt");
+
+            for (int i = 0; i < output.size(); i++) {
+                LatticeElement state = output.get(i);
+                String stateStr = state.toString();
+
+                if (!stateStr.isEmpty()) {
+                    String[] pointsToSets = stateStr.split(" ");
+                    Arrays.sort(pointsToSets);
+                    for (String pointsToSet : pointsToSets) {
+                        writer.write(String.format("%s: in%02d: %s%n",
+                                methodName, i, pointsToSet));
+                    }
+                    writer.write(System.lineSeparator());
+                }
+            }
+
+            writer.close();
+        } catch (Exception e) {
+            System.err.println("Error writing to file: " + e.getMessage());
+        }
+    }
+
+    private static void writeFullOutput2(ArrayList<ArrayList<LatticeElement>> output, String targetDirectory, String methodName) {
+        try {
+            FileWriter writer = new FileWriter(targetDirectory + File.separator + methodName +"_points_to_analysis"+ ".fulloutput.txt");
+
+            for (int iteration = 0; iteration < output.size(); iteration++) {
+                writer.write("Iteration " + iteration + ":\n");
+                ArrayList<LatticeElement> states = output.get(iteration);
+
+                for (int i = 0; i < states.size(); i++) {
+                    LatticeElement state = states.get(i);
+                    String stateStr = state.toString();
+
+                    if (!stateStr.isEmpty()) {
+                        String[] pointsToSets = stateStr.split(" ");
+                        Arrays.sort(pointsToSets);
+                        for (String pointsToSet : pointsToSets) {
+                            writer.write(String.format("%s: in%02d: %s%n",
+                                    methodName, i, pointsToSet));
+                        }
+                        writer.write(System.lineSeparator());
+                    }
+                }
+                writer.write(System.lineSeparator());
+            }
+
+            writer.close();
+        } catch (Exception e) {
+            System.err.println("Error writing to file: " + e.getMessage());
         }
     }
 
@@ -299,7 +420,14 @@ public class Analysis extends PAVBase {
     }
 
     protected static String fmtOutputLine(ResultTuple tup, String prefix) {
-        String line = tup.m + ": " + tup.p + ": " + tup.v + ":";
+        String line;
+        if(tup.v=="")
+        {
+             line = tup.m + ": " + tup.p + ": " + tup.v;
+        }
+        else {
+             line = tup.m + ": " + tup.p + ": " + tup.v + ":";
+        }
         List<String> intervalValues = tup.pV;
         Collections.sort(intervalValues);
         for (int i = 0; i < intervalValues.size(); i++) {

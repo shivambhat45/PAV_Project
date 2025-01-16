@@ -20,7 +20,6 @@ public class Kildall {
         // set initial point to d0
         states.set(0, d0);
 
-
         int y=0;
         while (!marked.isEmpty()){
             Integer curPoint = marked.iterator().next();

@@ -9,6 +9,7 @@ source environ.sh
 
 echo === building Analysis.java
 #javac -target 11 -g Analysis.java
+javac -g IALatticeElement.java
 javac -g Analysis.java
 
 

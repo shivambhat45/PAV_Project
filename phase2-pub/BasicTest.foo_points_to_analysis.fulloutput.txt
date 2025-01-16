@@ -1,0 +1,457 @@
+Iteration 0:
+BasicTest.foo: in01: r0:{new00}
+
+
+Iteration 1:
+BasicTest.foo: in01: r0:{new00}
+
+BasicTest.foo: in02: r0:{new00}
+BasicTest.foo: in02: r1:{new01}
+
+
+Iteration 2:
+BasicTest.foo: in01: r0:{new00}
+
+BasicTest.foo: in02: r0:{new00}
+BasicTest.foo: in02: r1:{new01}
+
+BasicTest.foo: in03: r0:{new00}
+BasicTest.foo: in03: r1:{new01}
+
+
+Iteration 3:
+BasicTest.foo: in01: r0:{new00}
+
+BasicTest.foo: in02: r0:{new00}
+BasicTest.foo: in02: r1:{new01}
+
+BasicTest.foo: in03: r0:{new00}
+BasicTest.foo: in03: r1:{new01}
+
+BasicTest.foo: in04: r0:{new00}
+BasicTest.foo: in04: r1:{new01}
+
+BasicTest.foo: in06: r0:{new00}
+BasicTest.foo: in06: r1:{new01}
+
+
+Iteration 4:
+BasicTest.foo: in01: r0:{new00}
+
+BasicTest.foo: in02: r0:{new00}
+BasicTest.foo: in02: r1:{new01}
+
+BasicTest.foo: in03: r0:{new00}
+BasicTest.foo: in03: r1:{new01}
+
+BasicTest.foo: in04: r0:{new00}
+BasicTest.foo: in04: r1:{new01}
+
+BasicTest.foo: in05: r0:{new00}
+BasicTest.foo: in05: r1:{new01}
+BasicTest.foo: in05: r2:{new00}
+
+BasicTest.foo: in06: r0:{new00}
+BasicTest.foo: in06: r1:{new01}
+
+
+Iteration 5:
+BasicTest.foo: in01: r0:{new00}
+
+BasicTest.foo: in02: r0:{new00}
+BasicTest.foo: in02: r1:{new01}
+
+BasicTest.foo: in03: r0:{new00}
+BasicTest.foo: in03: r1:{new01}
+
+BasicTest.foo: in04: r0:{new00}
+BasicTest.foo: in04: r1:{new01}
+
+BasicTest.foo: in05: r0:{new00}
+BasicTest.foo: in05: r1:{new01}
+BasicTest.foo: in05: r2:{new00}
+
+BasicTest.foo: in06: r0:{new00}
+BasicTest.foo: in06: r1:{new01}
+
+BasicTest.foo: in07: r0:{new00}
+BasicTest.foo: in07: r1:{new01}
+BasicTest.foo: in07: r2:{new00}
+
+
+Iteration 6:
+BasicTest.foo: in01: r0:{new00}
+
+BasicTest.foo: in02: r0:{new00}
+BasicTest.foo: in02: r1:{new01}
+
+BasicTest.foo: in03: r0:{new00}
+BasicTest.foo: in03: r1:{new01}
+
+BasicTest.foo: in04: r0:{new00}
+BasicTest.foo: in04: r1:{new01}
+
+BasicTest.foo: in05: r0:{new00}
+BasicTest.foo: in05: r1:{new01}
+BasicTest.foo: in05: r2:{new00}
+
+BasicTest.foo: in06: r0:{new00}
+BasicTest.foo: in06: r1:{new01}
+
+BasicTest.foo: in07: r0:{new00}
+BasicTest.foo: in07: r1:{new01}
+BasicTest.foo: in07: r2:{new00,new01}
+
+
+Iteration 7:
+BasicTest.foo: in01: r0:{new00}
+
+BasicTest.foo: in02: r0:{new00}
+BasicTest.foo: in02: r1:{new01}
+
+BasicTest.foo: in03: r0:{new00}
+BasicTest.foo: in03: r1:{new01}
+
+BasicTest.foo: in04: r0:{new00}
+BasicTest.foo: in04: r1:{new01}
+
+BasicTest.foo: in05: r0:{new00}
+BasicTest.foo: in05: r1:{new01}
+BasicTest.foo: in05: r2:{new00}
+
+BasicTest.foo: in06: r0:{new00}
+BasicTest.foo: in06: r1:{new01}
+
+BasicTest.foo: in07: r0:{new00}
+BasicTest.foo: in07: r1:{new01}
+BasicTest.foo: in07: r2:{new00,new01}
+
+BasicTest.foo: in08: r0:{new00}
+BasicTest.foo: in08: r1:{new01}
+BasicTest.foo: in08: r2:{new00,new01}
+
+
+Iteration 8:
+BasicTest.foo: in01: r0:{new00}
+
+BasicTest.foo: in02: r0:{new00}
+BasicTest.foo: in02: r1:{new01}
+
+BasicTest.foo: in03: r0:{new00}
+BasicTest.foo: in03: r1:{new01}
+
+BasicTest.foo: in04: r0:{new00}
+BasicTest.foo: in04: r1:{new01}
+
+BasicTest.foo: in05: r0:{new00}
+BasicTest.foo: in05: r1:{new01}
+BasicTest.foo: in05: r2:{new00}
+
+BasicTest.foo: in06: r0:{new00}
+BasicTest.foo: in06: r1:{new01}
+
+BasicTest.foo: in07: r0:{new00}
+BasicTest.foo: in07: r1:{new01}
+BasicTest.foo: in07: r2:{new00,new01}
+
+BasicTest.foo: in08: r0:{new00}
+BasicTest.foo: in08: r1:{new01}
+BasicTest.foo: in08: r2:{new00,new01}
+
+BasicTest.foo: in09: r0:{new00}
+BasicTest.foo: in09: r1:{new01}
+BasicTest.foo: in09: r2:{new00,new01}
+
+BasicTest.foo: in14: r0:{new00}
+BasicTest.foo: in14: r1:{new01}
+BasicTest.foo: in14: r2:{new00,new01}
+
+
+Iteration 9:
+BasicTest.foo: in01: r0:{new00}
+
+BasicTest.foo: in02: r0:{new00}
+BasicTest.foo: in02: r1:{new01}
+
+BasicTest.foo: in03: r0:{new00}
+BasicTest.foo: in03: r1:{new01}
+
+BasicTest.foo: in04: r0:{new00}
+BasicTest.foo: in04: r1:{new01}
+
+BasicTest.foo: in05: r0:{new00}
+BasicTest.foo: in05: r1:{new01}
+BasicTest.foo: in05: r2:{new00}
+
+BasicTest.foo: in06: r0:{new00}
+BasicTest.foo: in06: r1:{new01}
+
+BasicTest.foo: in07: r0:{new00}
+BasicTest.foo: in07: r1:{new01}
+BasicTest.foo: in07: r2:{new00,new01}
+
+BasicTest.foo: in08: r0:{new00}
+BasicTest.foo: in08: r1:{new01}
+BasicTest.foo: in08: r2:{new00,new01}
+
+BasicTest.foo: in09: r0:{new00}
+BasicTest.foo: in09: r1:{new01}
+BasicTest.foo: in09: r2:{new00,new01}
+
+BasicTest.foo: in10: r0:{new00}
+BasicTest.foo: in10: r1:{new01}
+BasicTest.foo: in10: r2:{new00,new01}
+
+BasicTest.foo: in14: r0:{new00}
+BasicTest.foo: in14: r1:{new01}
+BasicTest.foo: in14: r2:{new00,new01}
+
+
+Iteration 10:
+BasicTest.foo: in01: r0:{new00}
+
+BasicTest.foo: in02: r0:{new00}
+BasicTest.foo: in02: r1:{new01}
+
+BasicTest.foo: in03: r0:{new00}
+BasicTest.foo: in03: r1:{new01}
+
+BasicTest.foo: in04: r0:{new00}
+BasicTest.foo: in04: r1:{new01}
+
+BasicTest.foo: in05: r0:{new00}
+BasicTest.foo: in05: r1:{new01}
+BasicTest.foo: in05: r2:{new00}
+
+BasicTest.foo: in06: r0:{new00}
+BasicTest.foo: in06: r1:{new01}
+
+BasicTest.foo: in07: r0:{new00}
+BasicTest.foo: in07: r1:{new01}
+BasicTest.foo: in07: r2:{new00,new01}
+
+BasicTest.foo: in08: r0:{new00}
+BasicTest.foo: in08: r1:{new01}
+BasicTest.foo: in08: r2:{new00,new01}
+
+BasicTest.foo: in09: r0:{new00}
+BasicTest.foo: in09: r1:{new01}
+BasicTest.foo: in09: r2:{new00,new01}
+
+BasicTest.foo: in10: r0:{new00}
+BasicTest.foo: in10: r1:{new01}
+BasicTest.foo: in10: r2:{new00,new01}
+
+BasicTest.foo: in11: r0:{new00}
+BasicTest.foo: in11: r1:{new01}
+BasicTest.foo: in11: r2:{new00,new01}
+
+BasicTest.foo: in14: r0:{new00}
+BasicTest.foo: in14: r1:{new01}
+BasicTest.foo: in14: r2:{new00,new01}
+
+
+Iteration 11:
+BasicTest.foo: in01: r0:{new00}
+
+BasicTest.foo: in02: r0:{new00}
+BasicTest.foo: in02: r1:{new01}
+
+BasicTest.foo: in03: r0:{new00}
+BasicTest.foo: in03: r1:{new01}
+
+BasicTest.foo: in04: r0:{new00}
+BasicTest.foo: in04: r1:{new01}
+
+BasicTest.foo: in05: r0:{new00}
+BasicTest.foo: in05: r1:{new01}
+BasicTest.foo: in05: r2:{new00}
+
+BasicTest.foo: in06: r0:{new00}
+BasicTest.foo: in06: r1:{new01}
+
+BasicTest.foo: in07: r0:{new00}
+BasicTest.foo: in07: r1:{new01}
+BasicTest.foo: in07: r2:{new00,new01}
+
+BasicTest.foo: in08: r0:{new00}
+BasicTest.foo: in08: r1:{new01}
+BasicTest.foo: in08: r2:{new00,new01}
+
+BasicTest.foo: in09: r0:{new00}
+BasicTest.foo: in09: r1:{new01}
+BasicTest.foo: in09: r2:{new00,new01}
+
+BasicTest.foo: in10: r0:{new00}
+BasicTest.foo: in10: r1:{new01}
+BasicTest.foo: in10: r2:{new00,new01}
+
+BasicTest.foo: in11: r0:{new00}
+BasicTest.foo: in11: r1:{new01}
+BasicTest.foo: in11: r2:{new00,new01}
+
+BasicTest.foo: in12: r0:{new00}
+BasicTest.foo: in12: r1:{new01}
+BasicTest.foo: in12: r2:{new00,new01}
+
+BasicTest.foo: in14: r0:{new00}
+BasicTest.foo: in14: r1:{new01}
+BasicTest.foo: in14: r2:{new00,new01}
+
+
+Iteration 12:
+BasicTest.foo: in01: r0:{new00}
+
+BasicTest.foo: in02: r0:{new00}
+BasicTest.foo: in02: r1:{new01}
+
+BasicTest.foo: in03: r0:{new00}
+BasicTest.foo: in03: r1:{new01}
+
+BasicTest.foo: in04: r0:{new00}
+BasicTest.foo: in04: r1:{new01}
+
+BasicTest.foo: in05: r0:{new00}
+BasicTest.foo: in05: r1:{new01}
+BasicTest.foo: in05: r2:{new00}
+
+BasicTest.foo: in06: r0:{new00}
+BasicTest.foo: in06: r1:{new01}
+
+BasicTest.foo: in07: r0:{new00}
+BasicTest.foo: in07: r1:{new01}
+BasicTest.foo: in07: r2:{new00,new01}
+
+BasicTest.foo: in08: r0:{new00}
+BasicTest.foo: in08: r1:{new01}
+BasicTest.foo: in08: r2:{new00,new01}
+
+BasicTest.foo: in09: r0:{new00}
+BasicTest.foo: in09: r1:{new01}
+BasicTest.foo: in09: r2:{new00,new01}
+
+BasicTest.foo: in10: r0:{new00}
+BasicTest.foo: in10: r1:{new01}
+BasicTest.foo: in10: r2:{new00,new01}
+
+BasicTest.foo: in11: r0:{new00}
+BasicTest.foo: in11: r1:{new01}
+BasicTest.foo: in11: r2:{new00,new01}
+
+BasicTest.foo: in12: r0:{new00}
+BasicTest.foo: in12: r1:{new01}
+BasicTest.foo: in12: r2:{new00,new01}
+
+BasicTest.foo: in13: r0:{new00}
+BasicTest.foo: in13: r1:{new01}
+BasicTest.foo: in13: r2:{new00,new01}
+
+BasicTest.foo: in14: r0:{new00}
+BasicTest.foo: in14: r1:{new01}
+BasicTest.foo: in14: r2:{new00,new01}
+
+
+Iteration 13:
+BasicTest.foo: in01: r0:{new00}
+
+BasicTest.foo: in02: r0:{new00}
+BasicTest.foo: in02: r1:{new01}
+
+BasicTest.foo: in03: r0:{new00}
+BasicTest.foo: in03: r1:{new01}
+
+BasicTest.foo: in04: r0:{new00}
+BasicTest.foo: in04: r1:{new01}
+
+BasicTest.foo: in05: r0:{new00}
+BasicTest.foo: in05: r1:{new01}
+BasicTest.foo: in05: r2:{new00}
+
+BasicTest.foo: in06: r0:{new00}
+BasicTest.foo: in06: r1:{new01}
+
+BasicTest.foo: in07: r0:{new00}
+BasicTest.foo: in07: r1:{new01}
+BasicTest.foo: in07: r2:{new00,new01}
+
+BasicTest.foo: in08: r0:{new00}
+BasicTest.foo: in08: r1:{new01}
+BasicTest.foo: in08: r2:{new00,new01}
+
+BasicTest.foo: in09: r0:{new00}
+BasicTest.foo: in09: r1:{new01}
+BasicTest.foo: in09: r2:{new00,new01}
+
+BasicTest.foo: in10: r0:{new00}
+BasicTest.foo: in10: r1:{new01}
+BasicTest.foo: in10: r2:{new00,new01}
+
+BasicTest.foo: in11: r0:{new00}
+BasicTest.foo: in11: r1:{new01}
+BasicTest.foo: in11: r2:{new00,new01}
+
+BasicTest.foo: in12: r0:{new00}
+BasicTest.foo: in12: r1:{new01}
+BasicTest.foo: in12: r2:{new00,new01}
+
+BasicTest.foo: in13: r0:{new00}
+BasicTest.foo: in13: r1:{new01}
+BasicTest.foo: in13: r2:{new00,new01}
+
+BasicTest.foo: in14: r0:{new00}
+BasicTest.foo: in14: r1:{new01}
+BasicTest.foo: in14: r2:{new00,new01}
+
+
+Iteration 14:
+BasicTest.foo: in01: r0:{new00}
+
+BasicTest.foo: in02: r0:{new00}
+BasicTest.foo: in02: r1:{new01}
+
+BasicTest.foo: in03: r0:{new00}
+BasicTest.foo: in03: r1:{new01}
+
+BasicTest.foo: in04: r0:{new00}
+BasicTest.foo: in04: r1:{new01}
+
+BasicTest.foo: in05: r0:{new00}
+BasicTest.foo: in05: r1:{new01}
+BasicTest.foo: in05: r2:{new00}
+
+BasicTest.foo: in06: r0:{new00}
+BasicTest.foo: in06: r1:{new01}
+
+BasicTest.foo: in07: r0:{new00}
+BasicTest.foo: in07: r1:{new01}
+BasicTest.foo: in07: r2:{new00,new01}
+
+BasicTest.foo: in08: r0:{new00}
+BasicTest.foo: in08: r1:{new01}
+BasicTest.foo: in08: r2:{new00,new01}
+
+BasicTest.foo: in09: r0:{new00}
+BasicTest.foo: in09: r1:{new01}
+BasicTest.foo: in09: r2:{new00,new01}
+
+BasicTest.foo: in10: r0:{new00}
+BasicTest.foo: in10: r1:{new01}
+BasicTest.foo: in10: r2:{new00,new01}
+
+BasicTest.foo: in11: r0:{new00}
+BasicTest.foo: in11: r1:{new01}
+BasicTest.foo: in11: r2:{new00,new01}
+
+BasicTest.foo: in12: r0:{new00}
+BasicTest.foo: in12: r1:{new01}
+BasicTest.foo: in12: r2:{new00,new01}
+
+BasicTest.foo: in13: r0:{new00}
+BasicTest.foo: in13: r1:{new01}
+BasicTest.foo: in13: r2:{new00,new01}
+
+BasicTest.foo: in14: r0:{new00}
+BasicTest.foo: in14: r1:{new01}
+BasicTest.foo: in14: r2:{new00,new01}
+
+
