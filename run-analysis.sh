@@ -18,6 +18,8 @@ set -e
 ./build-analysis.sh
 # ./run-analysis-one.sh "./target1-pub" "BasicTest"   "BasicTest"   "fun1" 150
 # ./run-analysis-one.sh "./target1-pub" "BasicTest"   "BasicTest"   "fun2" 10
-./run-analysis-one.sh "./target1-pub" "BasicTest"   "BasicTest"   "fun3" 18
+#./run-analysis-one.sh "./target1-pub" "BasicTest"   "BasicTest"   "fun3" 18
+./run-analysis-one.sh "./phase2-pub" "BasicTest"   "BasicTest"   "foo" 100
+#./run-analysis-one.sh "./phase2-pub" "BasicTest"   "BasicTest"   "bar" 100
 
 # You should edit the line above whenever you want to change the parameters to the analysis. 
